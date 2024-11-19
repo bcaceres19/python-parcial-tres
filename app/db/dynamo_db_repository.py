@@ -51,6 +51,8 @@ class DynamoDbRepository:
                     return response['Item']
                 return {"message": f"Item con ID {item_id} no encontrado."}
             except ClientError as e:
-                raise ClientError(error_response= f"Error al obtener el ítem: {e.response['Error']['Message']}")
+                log_error(e)
+                return {"error": f"Error al obtener el ítem: {e.response['Error']['Message']}"}
             except Exception as e:
-                raise Exception(f"Error inesperado al obtener el ítem: {str(e)}")
+                log_error(e)
+                return {"error": f"Error inesperado al obtener el ítem: {str(e)}"}
