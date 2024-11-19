@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"  # Cambiado a una versión compatible con Lambda
+          python-version: "3.13"  # Versión compatible con AWS Lambda
 
       # Paso 3: Configurar AWS CLI
       - name: Configure AWS CLI
@@ -32,8 +32,7 @@ jobs:
 
       # Validar configuración de AWS
       - name: Validate AWS Configuration
-        run: |
-          aws sts get-caller-identity
+        run: aws sts get-caller-identity
 
       # Paso 4: Instalar dependencias específicas para x86_64
       - name: Install dependencies for x86_64 Lambda
@@ -46,39 +45,46 @@ jobs:
                       --target lambda_dependencies \
                       -r requirements.txt
 
-      # Paso 5: Crear archivo .env en el directorio app/
-      - name: Create .env file in app/
-        run: |
-          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" > app/.env
-          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> app/.env
-          echo "AWS_REGION=us-east-1" >> app/.env
-
-      # Paso 6: Incluir el directorio `app/` en el ZIP
+      # Paso 5: Incluir el directorio `app/` en el ZIP
       - name: Add app directory to ZIP
-        run: |
-          cp -r app lambda_dependencies/
+        run: cp -r app lambda_dependencies/
 
-      # Paso 7: Crear archivo ZIP
-      - name: Package dependencies, app, and .env into ZIP
+      # Paso 6: Crear archivo ZIP
+      - name: Package dependencies and app into ZIP
         run: |
           cd lambda_dependencies
           zip -r ../lambda_dependencies.zip .
           cd ..
 
-      # Paso 8: Subir el archivo ZIP a S3
+      # Paso 7: Subir el archivo ZIP a S3
       - name: Upload ZIP to S3
-        run: |
-          aws s3 cp lambda_dependencies.zip s3://zipapiparcial/lambda_dependencies.zip
+        env:
+          BUCKET_NAME: zipapiparcial
+        run: aws s3 cp lambda_dependencies.zip s3://$BUCKET_NAME/lambda_dependencies.zip
 
       # Validar que el archivo se subió a S3
       - name: Validate S3 Upload
-        run: |
-          aws s3 ls s3://zipapiparcial/lambda_dependencies.zip
+        env:
+          BUCKET_NAME: zipapiparcial
+        run: aws s3 ls s3://$BUCKET_NAME/lambda_dependencies.zip
 
-      # Paso 9: Actualizar la función Lambda
-      - name: Update Lambda Function
+      # Paso 8: Actualizar funciones Lambda
+      - name: Update Lambda Functions
+        env:
+          BUCKET_NAME: zipapiparcial
+          S3_KEY: lambda_dependencies.zip
         run: |
-          aws lambda update-function-code \
-            --function-name prueba \
-            --s3-bucket zipapiparcial \
-            --s3-key lambda_dependencies.zip
+          FUNCTIONS=(
+            "prueba"
+            "lambdaConexionDynamoDb"
+            "lambdaProcesamientoTexto"
+            "lambdaSaludoPersonalizado"
+            "lambdaSaludoSimple"
+            "lambdaCalculadoraBasica"
+          )
+          for FUNCTION_NAME in "${FUNCTIONS[@]}"; do
+            aws lambda update-function-code \
+              --function-name $FUNCTION_NAME \
+              --s3-bucket $BUCKET_NAME \
+              --s3-key $S3_KEY
+          done
