@@ -8,6 +8,8 @@ from app.service.calculadora_basica_service import CalculadoraBasicaService
 from app.service.guardar_estudiante_service import GuardarEstudianteService
 from app.service.consultar_estudiante_service import ConsultarEstudianteService
 from app.service.procesamiento_texto import ProcesamientoTextoService
+from app.service.saludo_personalizado_service import SaludoPersonalizadoService
+from app.service.saludo_simple_service import SaludoSimpleService
 
 # Crear instancia de router para manejar las rutas de DynamoDB
 router = APIRouter(
