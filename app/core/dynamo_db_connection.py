@@ -3,6 +3,8 @@ from botocore.exceptions import BotoCoreError, ClientError
 from app.core.config import config
 from contextlib import contextmanager
 
+from app.core.logger import log_error
+
 
 class DynamoDBConnection:
     """
@@ -46,6 +48,7 @@ def dynamo_table(table_name: str):
     """
     connection = DynamoDBConnection()
     table = connection.get_table(table_name)
+    log_error("Encontro la tabla")
     try:
         yield table
     except Exception as e:
