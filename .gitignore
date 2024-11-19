@@ -1,0 +1,98 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directories
+venv/
+parcial-venv/
+*.parcial-venv
+*.venv
+lambda_dependencies/
+*.lambda_dependencies
+
+# macOS files
+.DS_Store
+
+# Python egg info
+*.egg-info/
+.eggs/
+
+# Installed packages
+*.wheel
+
+# Logs and debugging
+*.log
+*.coverage
+*.coverage.*
+.coverage.*
+.hypothesis/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.cache
+pytest_cache/
+.pytest_cache/
+.tox/
+.tox-configured
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Local configurations
+*.env
+*.env.*
+.env.local
+.env.*.local
+.env.test
+.env.production
+.secret
+
+# PyCharm specific files
+.idea/
+
+# Visual Studio Code specific files
+.vscode/
+
+# MyPy cache
+.mypy_cache/
+
+# Pydantic cache
+*.mypy_cache/
+.mypy_cache/
+__pycache__/
+
+# Build and packaging
+build/
+dist/
+pip-wheel-metadata/
+
+# SQLite database files
+*.sqlite3
+*.db
+
+# Node.js dependencies (if applicable, e.g., for static files or UIs)
+node_modules/
+
+# Static files (Optional if generated dynamically)
+static/
+media/
+
+# Alembic migrations (if using Alembic for migrations)
+migrations/versions/*.pyc
+
+# Docker files
+*.dockerignore
+.dockerignore
+docker-compose.override.yml
+docker-compose.*.yml
+
+# Local configuration files
+*.local
+*.lock
+*.bak
+
+# Exclude IntelliJ files (optional)
+*.iml
+.idea/
