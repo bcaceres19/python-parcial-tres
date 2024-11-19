@@ -24,11 +24,10 @@ class Config(BaseSettings):
 
     RUTA_BASE: str = Field("/api", env="RUTA_BASE")
 
-
-    
-    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-    AWS_REGION = os.getenv("AWS_REGION", "us-east-1")  # Valor predeterminado
+    # Configuración de AWS
+    AWS_ACCESS_KEY_ID: str = Field(..., env="AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY: str = Field(..., env="AWS_SECRET_ACCESS_KEY")
+    AWS_REGION: str = Field("us-east-1", env="AWS_REGION")
 
 
     # Validación para convertir el valor de DEBUG correctamente
