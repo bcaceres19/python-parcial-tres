@@ -18,35 +18,49 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"  # Ajusta la versión según tu Lambda (3.10 recomendado)
+          python-version: "3.10"  # Cambiado a una versión compatible con Lambda
 
-      # Paso 3: Instalar dependencias en una carpeta específica
+      # Paso 3: Configurar AWS CLI
+      - name: Configure AWS CLI
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region us-east-1  # Cambia según la región de tu S3 y Lambda
+
+      # Validar configuración de AWS
+      - name: Validate AWS Configuration
+        run: |
+          aws sts get-caller-identity
+
+      # Paso 4: Instalar dependencias en una carpeta específica
       - name: Install dependencies for Lambda
         run: |
           python -m pip install --upgrade pip
           mkdir -p lambda_dependencies
           pip install -r requirements.txt -t lambda_dependencies
 
-      # Paso 4: Crear archivo ZIP
+      # Paso 5: Crear archivo ZIP
       - name: Package dependencies into ZIP
         run: |
           cd lambda_dependencies
           zip -r ../lambda_dependencies.zip .
           cd ..
 
-      # Paso 5: Subir a S3
-      - name: Upload to S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      # Paso 6: Subir el archivo ZIP a S3
+      - name: Upload ZIP to S3
         run: |
           aws s3 cp lambda_dependencies.zip s3://zipapiparcial/lambda_dependencies.zip
 
-      # Paso 6: Actualizar Lambda
+      # Validar que el archivo se subió a S3
+      - name: Validate S3 Upload
+        run: |
+          aws s3 ls s3://zipapiparcial/lambda_dependencies.zip
+
+      # Paso 7: Actualizar la función Lambda
       - name: Update Lambda Function
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws lambda update-function-code \
             --function-name prueba \
