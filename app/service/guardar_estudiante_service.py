@@ -33,7 +33,13 @@ class GuardarEstudianteService:
             
             # Insertar el estudiante usando el repositorio
             resultado = self.repository.insert_item(estudiante.model_dump())  # Usar model_dump() en lugar de dict() si es Pydantic v2
-
+            if "error" in resultado:
+                # Si ocurre un error en el repositorio, devolvemos un error
+                log_error(resultado)
+                return HTTPException(
+                    detail=f"Error al crear el estudiante: {resultado['error']}",
+                    status_code=500
+                )
             # Crear respuesta de éxito
             return ResponseGeneral(
                 mensaje="Estudiante guardado correctamente.",
