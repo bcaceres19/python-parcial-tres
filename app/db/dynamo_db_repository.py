@@ -26,9 +26,9 @@ class DynamoDbRepository:
                 table.put_item(Item=item)
                 return item
             except ClientError as e:
-                return {"error": f"Error al insertar el ítem: {e.response['Error']['Message']}"}
+                raise ClientError(error_response=f"Error al insertar el ítem: {e.response['Error']['Message']}")
             except Exception as e:
-                return {"error": f"Error inesperado al insertar el ítem: {str(e)}"}
+                raise Exception(f"Error inesperado al insertar el ítem: {str(e)}")
 
     def get_item_by_id(self, item_id: str):
         """
@@ -47,6 +47,6 @@ class DynamoDbRepository:
                     return response['Item']
                 return {"message": f"Item con ID {item_id} no encontrado."}
             except ClientError as e:
-                return {"error": f"Error al obtener el ítem: {e.response['Error']['Message']}"}
+                raise ClientError(error_response= f"Error al obtener el ítem: {e.response['Error']['Message']}")
             except Exception as e:
-                return {"error": f"Error inesperado al obtener el ítem: {str(e)}"}
+                raise Exception(f"Error inesperado al obtener el ítem: {str(e)}")
