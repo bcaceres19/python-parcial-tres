@@ -42,14 +42,19 @@ jobs:
           mkdir -p lambda_dependencies
           pip install -r requirements.txt -t lambda_dependencies
 
-      # Paso 5: Crear archivo ZIP
-      - name: Package dependencies into ZIP
+      # Paso 5: Incluir el directorio `app/` en el ZIP
+      - name: Add app directory to ZIP
+        run: |
+          cp -r app lambda_dependencies/
+
+      # Paso 6: Crear archivo ZIP
+      - name: Package dependencies and app into ZIP
         run: |
           cd lambda_dependencies
           zip -r ../lambda_dependencies.zip .
           cd ..
 
-      # Paso 6: Subir el archivo ZIP a S3
+      # Paso 7: Subir el archivo ZIP a S3
       - name: Upload ZIP to S3
         run: |
           aws s3 cp lambda_dependencies.zip s3://zipapiparcial/lambda_dependencies.zip
@@ -59,7 +64,7 @@ jobs:
         run: |
           aws s3 ls s3://zipapiparcial/lambda_dependencies.zip
 
-      # Paso 7: Actualizar la función Lambda
+      # Paso 8: Actualizar la función Lambda
       - name: Update Lambda Function
         run: |
           aws lambda update-function-code \
