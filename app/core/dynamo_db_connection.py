@@ -13,9 +13,7 @@ class DynamoDBConnection:
 
     def __init__(self, region_name: str = config.AWS_REGION):
         self._dynamodb = None
-        self.region_name = config.AWS_REGION
-        self.aws_access_key_id = config.AWS_ACCESS_KEY_ID
-        self.aws_secret_access_key = config.AWS_SECRET_ACCESS_KEY
+        self.region_name = region_name  # Región donde se encuentra la tabla
 
     @property
     def dynamodb(self):
@@ -23,12 +21,8 @@ class DynamoDBConnection:
         Obtiene una instancia de DynamoDB, inicializándola si no existe.
         """
         if not self._dynamodb:
-            self._dynamodb = boto3.resource(
-                'dynamodb',
-                aws_access_key_id=self.aws_access_key_id,
-                aws_secret_access_key=self.aws_secret_access_key,
-                region_name=self.region_name
-            )
+            # No se pasan credenciales explícitas
+            self._dynamodb = boto3.resource('dynamodb', region_name=self.region_name)
         return self._dynamodb
 
     def get_table(self, table_name: str):
@@ -51,4 +45,6 @@ def dynamo_table(table_name: str):
     try:
         yield table
     except Exception as e:
-        raise Exception(f"Error durante la operación con la tabla {table_name}: {e}")
+        log_error(f"Error durante la operación con la tabla {table_name}: {e}")
+        raise
+
