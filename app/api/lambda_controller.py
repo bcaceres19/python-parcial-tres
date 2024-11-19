@@ -24,8 +24,6 @@ def crear_estudiante_dynamo(estudiante: Estudiantes):
 
     return response
 
-
-
 @router.get("/consultar-estudiante-id", response_model=ResponseGeneral)
 def consultar_estudiante_dynamo(idEstudiante: str):
     service = ConsultarEstudianteService()

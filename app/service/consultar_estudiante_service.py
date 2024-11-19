@@ -15,8 +15,6 @@ class ConsultarEstudianteService:
         self.repository = DynamoDbRepository()
 
     def consultar_estudiante_id(self, id_item: str) -> ResponseGeneral:
-        log_error(config.AWS_ACCESS_KEY_ID)
-        log_error(config.AWS_SECRET_ACCESS_KEY)
         try:
             item = self.repository.get_item_by_id(id_item)
             if "error" in item:

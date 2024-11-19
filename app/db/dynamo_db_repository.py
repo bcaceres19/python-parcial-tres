@@ -24,7 +24,6 @@ class DynamoDbRepository:
         """
         with dynamo_table(self.table_name) as table:
             try:
-                log_error("Encontro la tabla")
                 # Insertar el ítem en la tabla
                 table.put_item(Item=item)
                 return item
