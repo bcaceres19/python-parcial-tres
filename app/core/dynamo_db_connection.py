@@ -13,7 +13,7 @@ class DynamoDBConnection:
 
     def __init__(self, region_name: str = config.AWS_REGION):
         self._dynamodb = None
-        self.region_name = region_name
+        self.region_name = config.AWS_REGION
         self.aws_access_key_id = config.AWS_ACCESS_KEY_ID
         self.aws_secret_access_key = config.AWS_SECRET_ACCESS_KEY
 
@@ -48,7 +48,6 @@ def dynamo_table(table_name: str):
     """
     connection = DynamoDBConnection()
     table = connection.get_table(table_name)
-    log_error("Encontro la tabla")
     try:
         yield table
     except Exception as e:
