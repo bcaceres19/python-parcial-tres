@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"  # Cambiado a una versión compatible con Lambda
+          python-version: "3.13"  # Cambiado a una versión compatible con Lambda
 
       # Paso 3: Configurar AWS CLI
       - name: Configure AWS CLI
@@ -35,12 +35,16 @@ jobs:
         run: |
           aws sts get-caller-identity
 
-      # Paso 4: Instalar dependencias en una carpeta específica
-      - name: Install dependencies for Lambda
+      # Paso 4: Instalar dependencias específicas para x86_64
+      - name: Install dependencies for x86_64 Lambda
         run: |
           python -m pip install --upgrade pip
           mkdir -p lambda_dependencies
-          pip install -r requirements.txt -t lambda_dependencies
+          pip install --platform manylinux2014_x86_64 \
+                      --only-binary=:all: \
+                      --upgrade \
+                      --target lambda_dependencies \
+                      -r requirements.txt
 
       # Paso 5: Incluir el directorio `app/` en el ZIP
       - name: Add app directory to ZIP
