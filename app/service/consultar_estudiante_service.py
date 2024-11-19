@@ -30,10 +30,10 @@ class ConsultarEstudianteService:
 
             if "error" in item:
                 # Si ocurre un error en el repositorio, devolvemos un error
-                return ResponseGeneral(
-                    mensaje=f"Error al consultar el estudiante: {item['error']}",
-                    status=500,
-                    data=None
+                log_error(item)
+                return HTTPException(
+                    detail=f"Error al consultar el estudiante: {item['error']}",
+                    status_code=500
                 )
             if "message" in item:
                 # Si no se encuentra el ítem
