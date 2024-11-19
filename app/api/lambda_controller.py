@@ -46,3 +46,14 @@ def procesamiento_texto(input_text: TextInput):
     return service.procesar_texto(input_text)
 
 
+@router.get("/saludo-simple", response_model=ResponseGeneral)
+def saludo_simple():
+    service = SaludoSimpleService()
+    return service.generar_saludo_simple()
+
+
+@router.get("/saludo-personalizado", response_model=ResponseGeneral)
+def saludo_personalizado(nombre: str):
+    service = SaludoPersonalizadoService()
+    return service.generar_saludo_personalizado(nombre)
+
